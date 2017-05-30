@@ -20,7 +20,6 @@
   },
   "main": "./src/ModuleManager.js",
   "scripts": {
-    "test": "mocha test",
-    "postinstall": "node scripts/browserify.js"
+    "test": "mocha test"
   }
 }
