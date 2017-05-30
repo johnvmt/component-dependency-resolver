@@ -1,0 +1,17 @@
+{
+  "name": "module-installer-loader",
+  "version": "1.0.0",
+  "description": "Module loader for Kaleidoscope framework",
+  "authors": [
+    "John Murphy-Teixidor <johnvmt@gmail.com>"
+  ],
+  "license": "MIT",
+  "main": "src/ModuleLoader.js",
+  "keywords": ["npm","package","module","loader"],
+  "ignore": [
+    "**/.*",
+    "bower_components"
+  ],
+  "dependencies": {
+  }
+}

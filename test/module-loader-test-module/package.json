@@ -1,0 +1,8 @@
+{
+  "name": "module-loader-test-module",
+  "version": "0.0.1",
+  "dependencies": {
+    "agnostic-router": "0.0.x"
+  },
+  "main": "module.js"
+}
