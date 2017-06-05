@@ -16,7 +16,7 @@
     "minifyify": "7.3.x"
   },
   "dependencies": {
-    "npm": "3.4.x"
+    "npm": "3.10.x"
   },
   "main": "./src/ModuleManager.js",
   "scripts": {
