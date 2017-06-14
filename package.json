@@ -1,6 +1,6 @@
 {
   "name": "module-installer-loader",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Module loader for Kaleidoscope framework",
   "private": false,
   "author": {
@@ -20,6 +20,7 @@
   },
   "main": "./src/ModuleManager.js",
   "scripts": {
-    "test": "mocha test"
+    "test": "mocha test",
+    "prepublish": "node ./scripts/browserify.js"
   }
 }
