@@ -34,8 +34,8 @@ ModuleLoader.prototype.load = function() {
 	function loadModule(moduleConfig, moduleKey) {
 		// Get all modules to be passed to module
 		var dependentModules = {};
-		if(typeof moduleConfig.modules == 'object' && moduleConfig.modules != null) { // Iterate over module dependencies
-			Utils.objectForEach(moduleConfig.modules, function(dependencyModuleKey, dependencyInternalKey) {
+		if(typeof moduleConfig.required == 'object' && moduleConfig.required != null) { // Iterate over module dependencies
+			Utils.objectForEach(moduleConfig.required, function(dependencyModuleKey, dependencyInternalKey) {
 				dependentModules[dependencyInternalKey] = parsedArgs.modulesLoaded[dependencyModuleKey];
 			});
 		}
@@ -53,8 +53,8 @@ ModuleLoader.prototype._dependencyGraph = function(modulesConfig) {
 	});
 
 	Utils.objectForEach(modulesConfig, function(moduleConfig, moduleKey) {// Iterate over modules in config
-		if(typeof moduleConfig.modules == 'object' && moduleConfig.modules != null) { // Iterate over module dependencies
-			Utils.objectForEach(moduleConfig.modules, function (dependencyModuleKey) {
+		if(typeof moduleConfig.required == 'object' && moduleConfig.required != null) { // Iterate over module dependencies
+			Utils.objectForEach(moduleConfig.required, function (dependencyModuleKey) {
 				dependencyGraph.addEdge(moduleKey, dependencyModuleKey); // Add each module to graph
 			});
 		}

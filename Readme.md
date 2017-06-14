@@ -17,7 +17,7 @@ Module installer (via NPM) and loader
 			whoami: 'test1',
 			callback: loadCallback
 		},
-		modules: {
+		required: {
 			test2: 'test2',
 			test3: 'test3'
 		}
@@ -29,7 +29,7 @@ Module installer (via NPM) and loader
 			whoami: 'test2',
 			callback: loadCallback
 		},
-		modules: {
+		required: {
 			test3: 'test3'
 		}
 	};
