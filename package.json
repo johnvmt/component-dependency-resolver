@@ -2,7 +2,7 @@
   "name": "module-installer-loader",
   "version": "1.0.0",
   "description": "Module loader for Kaleidoscope framework",
-  "private": true,
+  "private": false,
   "author": {
     "name": "John Murphy-Teixidor",
     "email": "johnvmt@gmail.com"
