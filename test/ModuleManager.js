@@ -56,6 +56,7 @@ describe('Module Manager Functions', function() {
 		}
 
 		manager.installLoadModules(modules, function(error, modulesLoaded) {
+
 			if(error)
 				throw new Error(error);
 			else {

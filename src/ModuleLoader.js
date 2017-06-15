@@ -40,8 +40,10 @@ ModuleLoader.prototype.load = function() {
 			});
 		}
 
+		var moduleFunction = typeof moduleConfig.function == 'function' ? moduleConfig.function : require(moduleConfig.require);
+
 		// TODO add try/catch
-		parsedArgs.modulesLoaded[moduleKey] = require(moduleConfig.require)(moduleConfig.argument, dependentModules);
+		parsedArgs.modulesLoaded[moduleKey] = moduleFunction(moduleConfig.argument, dependentModules);
 	}
 };
 

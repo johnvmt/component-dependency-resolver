@@ -1,15 +1,13 @@
 var Utils = require('./Utils');
 
 function ModuleManager(config) {
-
-	// TODO move these to make this work in the browser
-	this.moduleInstaller = require('./ModuleInstaller')();
 	this.moduleLoader = require('./ModuleLoader')();
-
 	this._modulesLoaded = {};
 }
 
 ModuleManager.prototype.installModules = function(modulesConfig, callback) {
+	if(typeof this.moduleInstaller == 'undefined')
+		this.moduleInstaller = require('./ModuleInstaller')();
 	var moduleInstaller = this.moduleInstaller;
 	var installsInProgress = 0;
 	var installStatus = {};
@@ -33,7 +31,9 @@ ModuleManager.prototype.installModules = function(modulesConfig, callback) {
 ModuleManager.prototype.loadModules = function(modulesConfig, callback) {
 	var core = this;
 	try {
+		console.log("STARTING-LOAD", modulesConfig);
 		this.moduleLoader.load(modulesConfig, core._modulesLoaded);
+		console.log("MOD-LOADED");
 		callback(null, core._modulesLoaded);
 	}
 	catch(error) {
