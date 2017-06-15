@@ -31,9 +31,7 @@ ModuleManager.prototype.installModules = function(modulesConfig, callback) {
 ModuleManager.prototype.loadModules = function(modulesConfig, callback) {
 	var core = this;
 	try {
-		console.log("STARTING-LOAD", modulesConfig);
 		this.moduleLoader.load(modulesConfig, core._modulesLoaded);
-		console.log("MOD-LOADED");
 		callback(null, core._modulesLoaded);
 	}
 	catch(error) {

@@ -1,4 +1,4 @@
-# Module Installer and Laoder #
+# Module Installer and Loader #
 Module installer (via NPM) and loader
 
 ## Usage ##
