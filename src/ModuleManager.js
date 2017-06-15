@@ -2,7 +2,7 @@ var Utils = require('./Utils');
 
 function ModuleManager(config) {
 	this.moduleLoader = require('./ModuleLoader')();
-	this._modulesLoaded = {};
+	this.modules = {};
 }
 
 ModuleManager.prototype.installModules = function(modulesConfig, callback) {
@@ -31,11 +31,11 @@ ModuleManager.prototype.installModules = function(modulesConfig, callback) {
 ModuleManager.prototype.loadModules = function(modulesConfig, callback) {
 	var core = this;
 	try {
-		this.moduleLoader.load(modulesConfig, core._modulesLoaded);
-		callback(null, core._modulesLoaded);
+		this.moduleLoader.load(modulesConfig, core.modules);
+		callback(null, core.modules);
 	}
 	catch(error) {
-		callback(error, core._modulesLoaded);
+		callback(error, core.modules);
 	}
 };
 
