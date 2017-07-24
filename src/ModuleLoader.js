@@ -3,7 +3,6 @@ var Graph = require('./Graph');
 
 function ModuleLoader(config) {
 	this.config = config;
-
 }
 
 /**
@@ -40,10 +39,9 @@ ModuleLoader.prototype.load = function() {
 			});
 		}
 
-		var moduleFunction = typeof moduleConfig.function == 'function' ? moduleConfig.function : require(moduleConfig.require);
-
 		// TODO add try/catch
-		parsedArgs.modulesLoaded[moduleKey] = moduleFunction(moduleConfig.argument, dependentModules);
+		var moduleExport = typeof moduleConfig.function == 'function' ? moduleConfig.function : require(moduleConfig.require);
+		parsedArgs.modulesLoaded[moduleKey] = (typeof moduleExport == 'function') ? moduleExport(moduleConfig.argument, dependentModules) : moduleExport;
 	}
 };
 
