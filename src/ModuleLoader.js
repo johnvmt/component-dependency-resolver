@@ -1,68 +1,62 @@
-var Utils = require('./Utils');
-var Graph = require('./Graph');
+import Graph from './Graph';
 
-function ModuleLoader(config) {
-	this.config = config;
+class ModuleLoader {
+
+
+
+	load(modulesConfig, moduleKey = null, modulesLoaded = {}) {
+
+		let dependencyGraph = ModuleLoader.dependencyGraph(modulesConfig);
+
+		if(moduleKey !== null)
+			dependencyGraph.depthFirstTraverse(moduleKey, loadModule);
+		else
+			dependencyGraph.depthFirstTraverse(loadModule);
+
+		return modulesLoaded;
+
+		function loadModule(moduleConfig, moduleKey) {
+			// Get all modules to be passed to module
+			let dependentModules = {};
+			if(typeof moduleConfig.required === 'object' && moduleConfig.required !== null) { // Iterate over module dependencies
+				for(let dependencyInternalKey in moduleConfig.required) {
+					if(moduleConfig.required.hasOwnProperty(dependencyInternalKey)) {
+						let dependencyModuleKey = moduleConfig.required[dependencyInternalKey];
+						if(!modulesLoaded.hasOwnProperty(dependencyModuleKey))
+							throw new Error('module_undefined: ' + dependencyModuleKey);
+						else
+							dependentModules[dependencyInternalKey] = modulesLoaded[dependencyModuleKey];
+					}
+				}
+			}
+
+			modulesLoaded[moduleKey] = moduleConfig.loader(dependentModules);
+		}
+	}
+
+	static dependencyGraph(modulesConfig) {
+		let dependencyGraph = new Graph();
+
+		for(let moduleKey in modulesConfig) {
+			if(modulesConfig.hasOwnProperty(moduleKey))
+				dependencyGraph.addNode(moduleKey, modulesConfig[moduleKey]); // Add each module to graph
+		}
+
+		for(let moduleKey in modulesConfig) {
+			if(modulesConfig.hasOwnProperty(moduleKey)) {
+				let moduleConfig = modulesConfig[moduleKey];
+
+				if(typeof moduleConfig.required === 'object' && moduleConfig.required !== null) { // Iterate over module dependencies
+					for(let dependencyModuleKey in moduleConfig.required) {
+						if(moduleConfig.required.hasOwnProperty(dependencyModuleKey))
+							dependencyGraph.addEdge(moduleKey, dependencyModuleKey); // Add each module to graph
+					}
+				}
+			}
+		}
+
+		return dependencyGraph;
+	}
 }
 
-/**
- *
- * @param [moduleKey]
- * @param modulesConfig
- * @param [modulesLoaded]
- */
-ModuleLoader.prototype.load = function() {
-	var parsedArgs = Utils.parseArgs(
-		arguments,
-		[
-			{name: 'moduleKey', level: 1,  validate: function(arg, allArgs) { return typeof arg == 'string'; }},
-			{name: 'modulesConfig', level: 0,  validate: function(arg, allArgs) { return typeof arg == 'object'; }},
-			{name: 'modulesLoaded', level: 1,  validate: function(arg, allArgs) { return typeof arg == 'object' && arg != null; }, default: {}}
-		]
-	);
-
-	var dependencyGraph = this._dependencyGraph(parsedArgs.modulesConfig);
-
-	if(typeof parsedArgs.moduleKey == 'string')
-		dependencyGraph.depthFirstTraverse(parsedArgs.moduleKey, loadModule);
-	else
-		dependencyGraph.depthFirstTraverse(loadModule);
-
-	return parsedArgs.modulesLoaded;
-
-	function loadModule(moduleConfig, moduleKey) {
-		// Get all modules to be passed to module
-		var dependentModules = {};
-		if(typeof moduleConfig.required == 'object' && moduleConfig.required != null) { // Iterate over module dependencies
-			Utils.objectForEach(moduleConfig.required, function(dependencyModuleKey, dependencyInternalKey) {
-				dependentModules[dependencyInternalKey] = parsedArgs.modulesLoaded[dependencyModuleKey];
-			});
-		}
-
-		// TODO add try/catch
-		var moduleExport = typeof moduleConfig.function == 'function' ? moduleConfig.function : require(moduleConfig.require);
-		parsedArgs.modulesLoaded[moduleKey] = (typeof moduleExport == 'function') ? moduleExport(moduleConfig.argument, dependentModules) : moduleExport;
-	}
-};
-
-ModuleLoader.prototype._dependencyGraph = function(modulesConfig) {
-	var dependencyGraph = Graph();
-
-	Utils.objectForEach(modulesConfig, function(moduleConfig, moduleKey) {// Iterate over modules in config
-		dependencyGraph.addNode(moduleKey, moduleConfig); // Add each module to graph
-	});
-
-	Utils.objectForEach(modulesConfig, function(moduleConfig, moduleKey) {// Iterate over modules in config
-		if(typeof moduleConfig.required == 'object' && moduleConfig.required != null) { // Iterate over module dependencies
-			Utils.objectForEach(moduleConfig.required, function (dependencyModuleKey) {
-				dependencyGraph.addEdge(moduleKey, dependencyModuleKey); // Add each module to graph
-			});
-		}
-	});
-
-	return dependencyGraph;
-};
-
-module.exports = function(config) {
-	return new ModuleLoader(config);
-};
+export default ModuleLoader;

@@ -2,7 +2,9 @@
   "name": "module-loader-test-module",
   "version": "0.0.1",
   "dependencies": {
-    "agnostic-router": "0.0.x"
+    "esm": "3.0.x"
   },
-  "main": "module.js"
+  "main": "index.js",
+  "jsnext:main": "module.js",
+  "module": "module.js"
 }

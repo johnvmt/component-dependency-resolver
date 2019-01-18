@@ -1,9 +1,9 @@
-# Module Installer and Loader #
-Module installer (via NPM) and loader
+# Module Loader #
+Module loader, with a dependency graph
 
 ## Usage ##
 
-	var manager = require('module-installer-loader')();
+	const TestModule = require('module-loader-test-module');
 	
 	var modules = {};
     
@@ -11,67 +11,42 @@ Module installer (via NPM) and loader
 	// Module 1 depends on Module 2 and 3 (available as test2, test3)
 	// argument option is passed to modules
 	
-	modules.test1 = {
-		npm: moduleNpm,
-		argument: {
-			whoami: 'test1',
-			callback: loadCallback
+	const modulesConfig = {
+		test1: {
+			loader: (modules) => new TestModule('test1', loadCallback, modules),
+			required: {
+				test2: 'test2',
+				test3: 'test3'
+			}
 		},
-		required: {
-			test2: 'test2',
-			test3: 'test3'
-		}
-	};
-
-	modules.test2 = {
-		npm: moduleNpm,
-		argument: {
-			whoami: 'test2',
-			callback: loadCallback
+		test2: {
+			loader: (modules) => new TestModule('test2', loadCallback, modules),
+			required: {
+				test3: 'test3'
+			}
 		},
-		required: {
-			test3: 'test3'
+		test3: {
+			loader: (modules) => new TestModule('test3', loadCallback, modules)
 		}
 	};
 
-	modules.test3 = {
-		npm: moduleNpm,
-		argument: {
-			whoami: 'test3',
-			callback: loadCallback
+	const loadOrder = ['test3', 'test2', 'test1'];
+	const loader = new ModuleLoader();
+	const modulesLoaded = loader.load(modulesConfig);
+
+	for(let moduleKey in modulesConfig) {
+		if(typeof modulesLoaded[moduleKey] === 'undefined')
+			throw new Error('Module not in loaded list');
+
+		if(modulesLoaded[moduleKey].whoami !== moduleKey)
+			throw new Error('Module\'s whoami does not match');
+
+		let dependentModules = modulesLoaded[moduleKey].modules;
+		for(let dependentModuleKey in modulesLoaded[moduleKey].modules) {
+			if(typeof dependentModules[dependentModuleKey] === 'undefined')
+				throw new Error('Dependent module not found');
 		}
-	};
-
-	var loadOrder = ['test3', 'test2', 'test1'];
-
-	function loadCallback(whoami) {
-		if(loadOrder[0] != whoami)
-			throw new Error("Wrong load order");
-
-		loadOrder.shift();
 	}
 
-	manager.installLoadModules(modules, function(error, modulesLoaded) {
-		if(error)
-			throw new Error(error);
-		else {
-			for(var moduleKey in modules) {
-				if(typeof modulesLoaded[moduleKey] == 'undefined')
-					throw new Error('Module not in loaded list');
-
-				if(modulesLoaded[moduleKey].whoami() != moduleKey)
-					throw new Error('Module\'s whoami does not match');
-
-				var dependentModules = modulesLoaded[moduleKey].modules();
-				for(var dependentModuleKey in modules[moduleKey].modules) {
-					if(typeof dependentModules[dependentModuleKey] == 'undefined')
-						throw new Error('Dependent module not found');
-				}
-			}
-
-			if(loadOrder.length)
-				throw new Error("Module load callbacks not called");
-
-			console.log('Installation and loading completed successfully');
-		}
-	});
+	if(loadOrder.length)
+		throw new Error("Module load callbacks not called");

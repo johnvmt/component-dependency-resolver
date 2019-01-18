@@ -1,7 +1,7 @@
 {
   "name": "module-installer-loader",
-  "version": "1.0.5",
-  "description": "Module loader for Kaleidoscope framework",
+  "version": "2.0.0",
+  "description": "Module loader, using dependency graph",
   "private": false,
   "author": {
     "name": "John Murphy-Teixidor",
@@ -9,18 +9,22 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/johnvmt/module-installer-loader.git"
+    "url": "https://github.com/johnvmt/node-module-installer-loader.git"
   },
   "devDependencies": {
-    "browserify": "11.2.x",
-    "minifyify": "7.3.x"
+    "chai": "^4.1.2",
+    "babel-eslint": "^8.0.3",
+    "eslint": "^5.0.1",
+    "mocha": "^4.0.1",
+    "module-loader-test-module": "file:./test/module-loader-test-module"
   },
   "dependencies": {
-    "npm": "3.10.x"
+    "esm": "3.0.x"
   },
-  "main": "./src/ModuleManager.js",
+  "main": "index.js",
+  "jsnext:main": "module.js",
+  "module": "module.js",
   "scripts": {
-    "test": "mocha test",
-    "prepublish": "node ./scripts/browserify.js"
+    "test": "mocha test"
   }
 }

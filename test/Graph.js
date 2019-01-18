@@ -1,16 +1,15 @@
-var assert = require('assert');
-
-var Graph = require('../src/Graph');
+const assert = require('assert');
+const Graph = require('esm')(module)('../src/Graph').default;
 
 describe('Graph Functions', function() {
 	describe('Add Node - Normal', function() {
 		it('should insert a node that does not already exist', function(done) {
-			var g = Graph();
+			let g = new Graph();
 
-			var nodeData = {dataKey: 'dataVal'};
-			var nodeKey = 'key';
+			let nodeData = {dataKey: 'dataVal'};
+			let nodeKey = 'key';
 			g.addNode(nodeKey, nodeData);
-			if(g.getNode(nodeKey) == nodeData)
+			if(g.getNode(nodeKey) === nodeData)
 				done();
 			else
 					throw new Error('Wrong data found on get');
@@ -19,17 +18,17 @@ describe('Graph Functions', function() {
 
 	describe('Add Node - Duplicate', function() {
 		it('should insert a node that already exists in the graph', function(done) {
-			var g = Graph();
+			let g = new Graph();
 
-			var nodeData = {dataKey: 'dataVal'};
-			var nodeKey = 'key';
+			let nodeData = {dataKey: 'dataVal'};
+			let nodeKey = 'key';
 			g.addNode(nodeKey, nodeData);
-			if(g.getNode(nodeKey) == nodeData) {
+			if(g.getNode(nodeKey) === nodeData) {
 				try {
 					g.addNode(nodeKey, nodeData);
 				}
 				catch(error) {
-					if(error.message == 'node_exists')
+					if(error.message === 'node_exists')
 						done();
 					else
 						throw error;
@@ -43,10 +42,10 @@ describe('Graph Functions', function() {
 
 	describe('Has Node - Exists', function() {
 		it('should try to find a node that is in the graph', function(done) {
-			var g = Graph();
+			let g = new Graph();
 
-			var nodeData = {dataKey: 'dataVal'};
-			var nodeKey = 'key';
+			let nodeData = {dataKey: 'dataVal'};
+			let nodeKey = 'key';
 			g.addNode(nodeKey, nodeData);
 			if(g.hasNode(nodeKey))
 				done();
@@ -57,10 +56,10 @@ describe('Graph Functions', function() {
 
 	describe('Has Node - Does not exist', function() {
 		it('should try to find a node that is in the graph', function(done) {
-			var g = Graph();
+			let g = new Graph();
 
-			var nodeData = {dataKey: 'dataVal'};
-			var nodeKey = 'key';
+			let nodeData = {dataKey: 'dataVal'};
+			let nodeKey = 'key';
 			g.addNode(nodeKey, nodeData);
 			if(g.hasNode(nodeKey + 'extra'))
 				throw new Error('Has node returned true, when should have returned false');
@@ -71,7 +70,7 @@ describe('Graph Functions', function() {
 
 	describe('Add Edge - Normal', function() {
 		it('should insert two nodes (A and B), and an edge from A to B', function(done) {
-			var g = Graph();
+			let g = new Graph();
 
 
 			g.addNode('a', 'Node A');
@@ -86,7 +85,7 @@ describe('Graph Functions', function() {
 
 	describe('Add Edge - Cycle', function() {
 		it('should insert three nodes (A, B and C), with edges including a cycle', function(done) {
-			var g = Graph();
+			let g = new Graph();
 
 
 			g.addNode('a', 'Node A');
@@ -102,7 +101,7 @@ describe('Graph Functions', function() {
 				throw new Error('Failed to detect cycle');
 			}
 			catch(error) {
-				if(error.message == 'graph_cycle')
+				if(error.message === 'graph_cycle')
 					done();
 				else
 					throw new Error('Unknown error message' + error.message);
@@ -112,7 +111,7 @@ describe('Graph Functions', function() {
 
 	describe('Depth-First Traverse - All', function() {
 		it('should create a graph with 3 nodes and edges, and attempt to traverse it, ', function(done) {
-			var g = Graph();
+			let g = new Graph();
 
 
 			g.addNode('a', 'Node A');
@@ -123,12 +122,12 @@ describe('Graph Functions', function() {
 			g.addEdge('b', 'c'); // B depends on C (C comes before B)
 			g.addEdge('a', 'c'); // A depends on C (C comes before A)
 
-			var nodeOrder = ['c', 'b', 'a'];
+			let nodeOrder = ['c', 'b', 'a'];
 
 			g.depthFirstTraverse(function(nodeData, nodeKey) {
-				if(nodeKey == nodeOrder[0]) {
+				if(nodeKey === nodeOrder[0]) {
 					nodeOrder.shift();
-					if(nodeOrder.length == 0)
+					if(nodeOrder.length === 0)
 						done();
 				}
 				else
@@ -139,7 +138,7 @@ describe('Graph Functions', function() {
 
 	describe('Depth-First Traverse - Disjoint', function() {
 		it('should create a graph with 4 nodes, including a disjoined node, and attempt to traverse it, ', function(done) {
-			var g = Graph();
+			let g = new Graph();
 
 			g.addNode('a', 'Node A');
 			g.addNode('b', 'Node B');
@@ -150,12 +149,12 @@ describe('Graph Functions', function() {
 			g.addEdge('b', 'c'); // B depends on C (C comes before B)
 			g.addEdge('a', 'c'); // A depends on C (C comes before A)
 
-			var nodeOrder = ['c', 'b', 'a', 'd'];
+			let nodeOrder = ['c', 'b', 'a', 'd'];
 
 			g.depthFirstTraverse(function(nodeData, nodeKey) {
-				if(nodeKey == nodeOrder[0]) {
+				if(nodeKey === nodeOrder[0]) {
 					nodeOrder.shift();
-					if(nodeOrder.length == 0)
+					if(nodeOrder.length === 0)
 						done();
 				}
 				else
@@ -166,7 +165,7 @@ describe('Graph Functions', function() {
 
 	describe('Depth-First Traverse - With starting point', function() {
 		it('should create a graph with 4 nodes, including a disjoined node, and attempt to traverse it from a given starting point, ', function(done) {
-			var g = Graph();
+			let g = new Graph();
 
 			g.addNode('a', 'Node A');
 			g.addNode('b', 'Node B');
@@ -177,7 +176,7 @@ describe('Graph Functions', function() {
 			g.addEdge('b', 'c'); // B depends on C (C comes before B)
 			g.addEdge('a', 'c'); // A depends on C (C comes before A)
 
-			var nodeOrder = ['c', 'b'];
+			let nodeOrder = ['c', 'b'];
 
 			g.depthFirstTraverse('b', function(nodeData, nodeKey) {
 				if(nodeKey == nodeOrder[0]) {
