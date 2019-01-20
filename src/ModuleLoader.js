@@ -1,11 +1,7 @@
 import Graph from './Graph';
 
 class ModuleLoader {
-
-
-
 	load(modulesConfig, moduleKey = null, modulesLoaded = {}) {
-
 		let dependencyGraph = ModuleLoader.dependencyGraph(modulesConfig);
 
 		if(moduleKey !== null)
@@ -49,7 +45,7 @@ class ModuleLoader {
 				if(typeof moduleConfig.required === 'object' && moduleConfig.required !== null) { // Iterate over module dependencies
 					for(let dependencyModuleKey in moduleConfig.required) {
 						if(moduleConfig.required.hasOwnProperty(dependencyModuleKey))
-							dependencyGraph.addEdge(moduleKey, dependencyModuleKey); // Add each module to graph
+							dependencyGraph.addEdge(moduleKey, moduleConfig.required[dependencyModuleKey]); // Add each module to graph
 					}
 				}
 			}
