@@ -40,39 +40,21 @@ class Graph {
 		}
 	}
 
-	depthFirstTraverse() {
-		let sourceNodeKey, visitedNodes, callback;
-		if(arguments.length === 1)
-			callback = arguments[0];
-		else if(arguments.length === 2) {
-			sourceNodeKey = arguments[0];
-			callback = arguments[1];
-		}
-		else if(arguments.length === 3) {
-			sourceNodeKey = arguments[0];
-			visitedNodes = arguments[1];
-			callback = arguments[2];
-		}
-		else
-			throw new Error('invalid_arguments');
-
-		if(typeof visitedNodes === 'undefined')
-			visitedNodes = {};
-
-		if(typeof sourceNodeKey === 'undefined') {
+	depthFirstTraverse(nodeCallback, sourceNodeKey = null, visitedNodes = {}) {
+		if(sourceNodeKey === null) {
 			// Start with nodes with indegree 0
 			for(let nodeKey in this._nodes) {
 				if (this._nodes.hasOwnProperty(nodeKey) && this._nodes[nodeKey].indegree === 0)
-					this.depthFirstTraverse(nodeKey, visitedNodes, callback);
+					this.depthFirstTraverse(nodeCallback, nodeKey, visitedNodes);
 			}
 		}
 		else if(typeof this._nodes[sourceNodeKey] === 'object') {
 			if(typeof visitedNodes[sourceNodeKey] !== 'boolean' || !visitedNodes[sourceNodeKey]) {
 				visitedNodes[sourceNodeKey] = true;
 				for(let index in this._nodes[sourceNodeKey].edges) {
-					this.depthFirstTraverse(this._nodes[sourceNodeKey].edges[index], visitedNodes, callback);
+					this.depthFirstTraverse(nodeCallback, this._nodes[sourceNodeKey].edges[index], visitedNodes);
 				}
-				callback(this._nodes[sourceNodeKey].data, sourceNodeKey);
+				nodeCallback(this._nodes[sourceNodeKey].data, sourceNodeKey);
 			}
 		}
 		else {

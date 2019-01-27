@@ -1,1 +1,2 @@
-module.exports = require('esm')(module)('./src/ModuleLoader').default;
+require = require("esm")(module);
+module.exports = require('./module').default;

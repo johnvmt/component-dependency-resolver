@@ -5,7 +5,7 @@ class ModuleLoader {
 		let dependencyGraph = ModuleLoader.dependencyGraph(modulesConfig);
 
 		if(moduleKey !== null)
-			dependencyGraph.depthFirstTraverse(moduleKey, loadModule);
+			dependencyGraph.depthFirstTraverse(loadModule, moduleKey);
 		else
 			dependencyGraph.depthFirstTraverse(loadModule);
 

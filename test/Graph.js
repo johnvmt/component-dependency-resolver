@@ -178,7 +178,7 @@ describe('Graph Functions', function() {
 
 			let nodeOrder = ['c', 'b'];
 
-			g.depthFirstTraverse('b', function(nodeData, nodeKey) {
+			g.depthFirstTraverse(function(nodeData, nodeKey) {
 				if(nodeKey == nodeOrder[0]) {
 					nodeOrder.shift();
 					if(nodeOrder.length == 0)
@@ -186,7 +186,7 @@ describe('Graph Functions', function() {
 				}
 				else
 					throw new Error('Wrong order');
-			});
+			}, 'b');
 		});
 	});
 
