@@ -1,6 +1,6 @@
 {
   "name": "module-installer-loader",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "Module loader, using dependency graph",
   "private": false,
   "author": {
@@ -19,7 +19,7 @@
     "module-loader-test-module": "file:./test/module-loader-test-module"
   },
   "dependencies": {
-    "esm": "3.1.x"
+    "esm": "^3.2.25"
   },
   "main": "index.js",
   "jsnext:main": "module.js",
