@@ -2,7 +2,7 @@
   "name": "module-loader-test-module",
   "version": "0.0.1",
   "dependencies": {
-    "esm": "3.0.x"
+    "esm": "3.2.x"
   },
   "main": "index.js",
   "jsnext:main": "module.js",
