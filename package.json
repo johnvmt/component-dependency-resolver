@@ -1,7 +1,7 @@
 {
-  "name": "module-installer-loader",
-  "version": "2.2.0",
-  "description": "Module loader, using dependency graph",
+  "name": "component-dependency-resolver",
+  "version": "3.0.0",
+  "description": "Resolve dependencies using graph",
   "private": false,
   "author": {
     "name": "John Murphy-Teixidor",
@@ -9,22 +9,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/johnvmt/node-module-installer-loader.git"
+    "url": "https://github.com/johnvmt/component-dependency-resolver.git"
+  },
+  "type": "module",
+  "module": "src/exports.js",
+  "dependencies": {
+
   },
   "devDependencies": {
-    "chai": "^4.1.2",
-    "babel-eslint": "^8.0.3",
-    "eslint": "^5.0.1",
-    "mocha": "^4.0.1",
-    "module-loader-test-module": "file:./test/module-loader-test-module"
-  },
-  "dependencies": {
-    "esm": "^3.2.25"
-  },
-  "main": "index.js",
-  "jsnext:main": "module.js",
-  "module": "module.js",
-  "scripts": {
-    "test": "mocha test"
+
   }
 }
