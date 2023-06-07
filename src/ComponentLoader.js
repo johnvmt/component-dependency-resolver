@@ -15,6 +15,14 @@ class ComponentLoader {
     }
 
     /**
+     * Returns an object of components by name
+     * @returns {unknown[]}
+     */
+    get components() {
+        return Object.freeze(this._componentsByName);
+    }
+
+    /**
      * Resolve dependencies and call constructors for all components
      * @returns {Promise<void>}
      */
@@ -109,18 +117,27 @@ class ComponentLoader {
     }
 
     /**
-     * get args to pass to component constructor
+     * Return component dependencies as object
      * @param componentName
-     * @returns {Promise<T[]>}
+     * @returns {Promise<T>}
      */
-    async componentConstructorArgs(componentName) {
+    async componentDependencies(componentName) {
         const componentDependencyNames = await this.componentDependencyNames(componentName);
-        const componentDependencies = componentDependencyNames.reduce((componentDependencies, componentDependencyName) => {
+        return componentDependencyNames.reduce((componentDependencies, componentDependencyName) => {
             return {
                 ...componentDependencies,
                 [componentDependencyName]: this._componentsByName[componentDependencyName]
             }
         }, {});
+    }
+
+    /**
+     * get args to pass to component constructor
+     * @param componentName
+     * @returns {Promise<T[]>}
+     */
+    async componentConstructorArgs(componentName) {
+        const componentDependencies = await this.componentDependencies(componentName);
 
         return [componentDependencies];
     }
