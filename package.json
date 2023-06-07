@@ -1,6 +1,6 @@
 {
   "name": "component-dependency-resolver",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "description": "Resolve dependencies using graph",
   "private": false,
   "author": {
@@ -12,7 +12,7 @@
     "url": "https://github.com/johnvmt/component-dependency-resolver.git"
   },
   "type": "module",
-  "module": "src/exports.js",
+  "main": "src/exports.js",
   "dependencies": {
 
   },
