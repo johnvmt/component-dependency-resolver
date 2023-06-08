@@ -19,7 +19,7 @@ class ComponentLoader {
      * @returns {unknown[]}
      */
     get components() {
-        return Object.freeze(this._componentsByName);
+        return this._componentsByName;
     }
 
     /**
@@ -28,7 +28,7 @@ class ComponentLoader {
      */
     async load() {
         await this._dependencyLoader.load(this._componentNames);
-        return Object.freeze(this._componentsByName);
+        return this._componentsByName;
     }
 
     /**

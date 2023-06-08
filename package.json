@@ -1,6 +1,6 @@
 {
   "name": "component-dependency-resolver",
-  "version": "3.0.2",
+  "version": "3.0.3",
   "description": "Resolve dependencies using graph",
   "private": false,
   "author": {
