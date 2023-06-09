@@ -11,7 +11,7 @@ class ComponentLoader {
         this._componentClassesByName = {};
         this._componentsByName = {};
 
-        this._dependencyLoader = new DependencyLoader(componentNames, (componentNames) => this.componentsDependencyNames(componentNames), (componentNames) => this.startComponents(componentNames));
+        this._dependencyLoader = new DependencyLoader(componentNames, (componentNames) => this.componentsDependencyNames(componentNames), (componentNames) => this.initializeComponents(componentNames));
     }
 
     /**
@@ -147,7 +147,7 @@ class ComponentLoader {
      * @param componentName
      * @returns {Promise<void>}
      */
-    async startComponent(componentName) {
+    async initializeComponent(componentName) {
         const componentConstructorArgs = await this.componentConstructorArgs(componentName);
         const componentClass = this._componentClassesByName[componentName];
         this._componentsByName[componentName] = new componentClass(...componentConstructorArgs);
@@ -158,8 +158,8 @@ class ComponentLoader {
      * @param componentNames
      * @returns {Promise<Awaited<unknown>[]>}
      */
-    async startComponents(componentNames) {
-        return Promise.all(componentNames.map(componentName => this.startComponent(componentName)));
+    async initializeComponents(componentNames) {
+        return Promise.all(componentNames.map(componentName => this.initializeComponent(componentName)));
     }
 
     /**
