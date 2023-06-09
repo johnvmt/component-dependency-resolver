@@ -5,10 +5,15 @@ import DependencyLoader from "./DependencyLoader.js";
 import ExtendedError from "./ExtendedError.js";
 
 class ComponentLoader {
+    /**
+     * Implementation of dependency loader using a Component class to hold configs
+     * @param componentNames
+     * @param componentDirectory
+     */
     constructor(componentNames, componentDirectory) {
         this._componentNames = componentNames;
         this._componentDirectory = componentDirectory;
-        this._componentClassesByName = {};
+        this._componentConfigsByName = {};
         this._componentsByName = {};
 
         this._dependencyLoader = new DependencyLoader(componentNames, (componentNames) => this.componentsDependencyNames(componentNames), (componentNames) => this.initializeComponents(componentNames));
@@ -36,8 +41,8 @@ class ComponentLoader {
      * @param componentName
      * @returns {boolean}
      */
-    cacheHasComponentClass(componentName) {
-        return (componentName in this._componentClassesByName);
+    cacheHasComponentConfig(componentName) {
+        return (componentName in this._componentConfigsByName);
     }
 
     /**
@@ -45,19 +50,20 @@ class ComponentLoader {
      * @param componentName
      * @returns {*}
      */
-    loadComponentClassFromCache(componentName) {
-        if(!this.cacheHasComponentClass(componentName))
+    loadComponentConfigFromCache(componentName) {
+        if(!this.cacheHasComponentConfig(componentName))
             throw new ExtendedError(`Component ${componentName} not in cache`, {code: 'component_not_in_cache'});
 
-        return this._componentClassesByName[componentName];
+        return this._componentConfigsByName[componentName];
     }
 
     /**
      * Load component class from a file in the component directory and add it to the cache
+     * Can be overriden by class that inherit from this one
      * @param componentName
      * @returns {Promise<*|boolean>}
      */
-    async loadComponentClassFromFile(componentName) {
+    async loadComponentConfigFromFile(componentName) {
         // TODO use glob to get any version (mjs, js, cjs)
         const componentPath = path.join(this._componentDirectory, `${componentName}.js`);
         const componentExports = (await import(componentPath));
@@ -66,15 +72,15 @@ class ComponentLoader {
         if(!('default' in componentExports))
             throw new ExtendedError(`default export not found in ${componentName}`, {code: 'component_default_export'});
 
-        const componentClass = componentExports.default;
+        const componentConfig = componentExports.default;
 
-        if(!(componentClass.prototype instanceof Component))
+        if(!(componentConfig.prototype instanceof Component))
             throw new ExtendedError(`component ${componentName} is not an instance of Component`, {code: 'component_invalid'});
 
         // add to cache
-        this._componentClassesByName[componentName] = componentClass;
+        this._componentConfigsByName[componentName] = componentConfig;
 
-        return componentClass;
+        return componentConfig;
     }
 
     /**
@@ -82,10 +88,10 @@ class ComponentLoader {
      * @param componentName
      * @returns {Promise<Promise<*>|Promise<*|boolean>>}
      */
-    async loadComponentClass(componentName) {
-        return this.cacheHasComponentClass(componentName)
-            ? this.loadComponentClassFromCache(componentName)
-            : this.loadComponentClassFromFile(componentName);
+    async loadComponentConfig(componentName) {
+        return this.cacheHasComponentConfig(componentName)
+            ? this.loadComponentConfigFromCache(componentName)
+            : this.loadComponentConfigFromFile(componentName);
     }
 
     /**
@@ -93,8 +99,8 @@ class ComponentLoader {
      * @param componentNames
      * @returns {Promise<Awaited<unknown>[]>}
      */
-    async loadComponentClasses(componentNames) {
-        return Promise.all(componentNames.map(componentName => this.loadComponentClass(componentName)))
+    async loadComponentConfigs(componentNames) {
+        return Promise.all(componentNames.map(componentName => this.loadComponentConfig(componentName)))
     };
 
     /**
@@ -103,8 +109,8 @@ class ComponentLoader {
      * @returns {Promise<[]|string[]|*|*[]>}
      */
     async componentDependencyNames(componentName) {
-        const componentClass = await this.loadComponentClass(componentName);
-        return ComponentLoader.dependenciesFromComponentClass(componentClass);
+        const componentConfig = await this.loadComponentConfig(componentName);
+        return ComponentLoader.dependenciesFromComponentConfig(componentConfig);
     }
 
     /**
@@ -149,7 +155,7 @@ class ComponentLoader {
      */
     async initializeComponent(componentName) {
         const componentConstructorArgs = await this.componentConstructorArgs(componentName);
-        const componentClass = this._componentClassesByName[componentName];
+        const componentClass = this._componentConfigsByName[componentName];
         this._componentsByName[componentName] = new componentClass(...componentConstructorArgs);
     }
 
@@ -164,11 +170,11 @@ class ComponentLoader {
 
     /**
      *
-     * @param componentClass
+     * @param componentConfig
      * @returns {[]|[string]|string[]|[string]|[string]|[string]|*|*[]}
      */
-    static dependenciesFromComponentClass(componentClass) {
-        return componentClass.dependencies ?? [];
+    static dependenciesFromComponentConfig(componentConfig) {
+        return componentConfig.dependencies ?? [];
     }
 }
 
